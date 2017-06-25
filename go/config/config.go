@@ -77,3 +77,11 @@ func GetJwtConf() JwtConf {
 
     return configuration
 }
+
+func (j JwtConf) GetIssuer() string {
+    return j.Issuer
+}
+
+func (j JwtConf) GetSecret() string {
+    return j.Secret
+}
