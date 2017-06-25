@@ -25,6 +25,9 @@ func AuthOnly(h httprouter.Handle) httprouter.Handle {
 
         ctx := context.WithValue(r.Context(), "claims", claims)
 
+        // Pass bearar token in header again
+        w.Header().Set("Authorization", tokenHeader)
+
         h(w, r.WithContext(ctx), p)
     }
 }
@@ -43,6 +46,9 @@ func WithUser(h httprouter.Handle) httprouter.Handle {
         }
 
         ctx := context.WithValue(r.Context(), "claims", claims)
+
+        // Pass bearar token in header again
+        w.Header().Set("Authorization", tokenHeader)
 
         h(w, r.WithContext(ctx), p)
     }

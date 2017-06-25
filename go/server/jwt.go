@@ -4,7 +4,6 @@ import (
     "fmt"
     "time"
 
-    "gopkg.in/mgo.v2/bson"
     "github.com/dgrijalva/jwt-go"
 )
 
@@ -14,11 +13,18 @@ type JwtConfig interface {
 }
 
 type Claims struct {
-    UserId bson.ObjectId `json: "user_id"`
+    UserId uint32 `json: "user_id"`
     jwt.StandardClaims
 }
 
-func NewClaims(uid bson.ObjectId, jwtConfig JwtConfig) Claims {
+func (c Claims) IsEmpty() bool {
+    if c == (Claims{}) {
+        return false
+    }
+    return true
+}
+
+func NewClaims(uid uint32, jwtConfig JwtConfig) Claims {
     return Claims{
         uid,
         jwt.StandardClaims{
