@@ -43,11 +43,58 @@ func NewPost() Post {
     return Post{}
 }
 
-func FindPostBySlug(slug string) (Post, error) {
-    var err error
+func (p *Post) IsEmpty() bool {
+    if *p == (Post{}) {
+        return true
+    }
+    return false
+}
+
+func FindActivePostBySlug(slug string) (Post, error) {
     post := Post{}
 
-    err = SQL.Get(&post, "SELECT * FROM " + postT + " WHERE slug = ? LIMIT 1", slug)
-
+    err := SQL.Get(&post, "SELECT * FROM " + postT + " WHERE slug = ? AND published_at < NOW() LIMIT 1", slug)
     return post, err
+}
+
+func GetActivePosts() ([]Post, error) {
+    posts := []Post{}
+
+    err := SQL.Select(&posts, "SELECT * FROM posts WHERE published_at < NOW()")
+    return posts, err
+}
+
+func DeletePostBySlug(slug string, userId uint32) error {
+    stmt, err := SQL.Prepare("DELETE FROM posts WHERE slug = ? AND user_id = ?")
+    if err != nil {
+        return err
+    }
+    _, err = stmt.Exec(slug, userId)
+    return err
+}
+
+func CreatePost(post *Post, userId uint32, ) error {
+    now := time.Now()
+
+    post.CreatedAt = timeToDb(&now)
+    post.UpdatedAt = timeToDb(&now)
+
+    stmt, err := SQL.Prepare("INSERT INTO posts (active, user_id, title, slug, content, summary, published_at, created_at, updated_at")
+    if err != nil {
+        return err
+    }
+    _, err = stmt.Exec(post.Active, userId, post.Title, post.Slug, post.Content, post.Summary, post.PublishedAt, post.CreatedAt, post.UpdatedAt)
+    return err
+}
+
+func UpdateBySlug(post *Post, userId uint32, slug string) error {
+    now := time.Now()
+    post.UpdatedAt = timeToDb(&now)
+
+    stmt, err := SQL.Prepare("UPDATE posts SET active=?, title=?, slug=?, content=?, summary=?, published_at=?, created_at=?, updated_at=? WHERE user_id = ?")
+    if err != nil {
+        return err
+    }
+    _, err = stmt.Exec(post.Active, post.Title, post.Slug, post.Content, post.Summary, post.PublishedAt, post.CreatedAt, post.UpdatedAt, userId)
+    return err
 }
