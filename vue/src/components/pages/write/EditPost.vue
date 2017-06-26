@@ -26,7 +26,10 @@ export default {
         summary: '',
         content: '',
         active: 0,
-        published_at: ''
+        published_at: {
+          String: '',
+          Valid: 0
+        }
       }
     }
   },

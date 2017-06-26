@@ -100,11 +100,11 @@ export default {
     }
   },
   created () {
-    this.startTime.time = this.post.published_at
+    this.startTime.time = this.post.published_at.String
   },
   watch: {
     'startTime.time': 'updatePublishedAt',
-    'post.published_at': 'updateStartTime'
+    'post.published_at.String': 'updateStartTime'
   },
   methods: {
     publish (post) {
@@ -127,7 +127,8 @@ export default {
       }
     },
     updatePublishedAt (val) {
-      this.post.published_at = val
+      this.post.published_at.String = val
+      this.post.published_at.Valid = 1
     },
     updateStartTime (val) {
       this.startTime.time = val

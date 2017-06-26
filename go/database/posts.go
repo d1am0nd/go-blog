@@ -68,6 +68,13 @@ func FindMyPostBySlug(userId uint32, slug string) (Post, error) {
     return post, err
 }
 
+func FindOnlyMyPostBySlug(userId uint32, slug string) (Post, error) {
+    post := Post{}
+
+    err := SQL.Get(&post, "SELECT * FROM " + postT + " WHERE slug = ? AND user_id = ? LIMIT 1", slug, userId)
+    return post, err
+}
+
 func GetActivePosts() ([]Post, error) {
     posts := []Post{}
 
@@ -96,7 +103,7 @@ func DeletePostBySlug(slug string, userId uint32) error {
     return err
 }
 
-func CreatePost(post *Post, userId uint32, ) error {
+func CreatePost(post *Post, userId uint32) error {
     now := time.Now()
 
     post.CreatedAt = timeToDb(&now)
@@ -110,7 +117,7 @@ func CreatePost(post *Post, userId uint32, ) error {
     return err
 }
 
-func UpdateBySlug(post *Post, userId uint32, slug string) error {
+func UpdatePostBySlug(post *Post, userId uint32, slug string) error {
     now := time.Now()
     post.UpdatedAt = timeToDb(&now)
 

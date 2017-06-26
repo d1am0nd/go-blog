@@ -70,3 +70,50 @@ func MyPosts(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     w.Header().Set("Content-Type", "application/json")
     w.Write(json)
 }
+
+func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    var userId = r.Context().Value("claims").(Claims).UserId
+    slug := p.ByName("slug")
+
+    // Find existing post or 404
+    post, err := database.FindOnlyMyPostBySlug(userId, slug)
+    if err != nil {
+        fmt.Println(err)
+        http.Error(w, "Resource not found", http.StatusNotFound)
+        return
+    }
+
+    // Setting values
+    active := r.FormValue("active")
+    if active == "1" || active == "true" {
+        post.Active = true
+    } else {
+        post.Active = false
+    }
+    publishedAtValid := r.FormValue("published_at[Valid]")
+    if publishedAtValid == "true" || publishedAtValid == "1" {
+        post.PublishedAt.Valid = true
+        post.PublishedAt.String = r.FormValue("published_at[String]")
+    } else {
+        post.PublishedAt.Valid = false
+        post.PublishedAt.String = ""
+    }
+    post.Title = r.FormValue("title")
+    post.Slug = r.FormValue("slug")
+    post.Content = r.FormValue("content")
+
+    err = database.UpdatePostBySlug(&post, userId, slug)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    json, err := json.Marshal(post)
+    if err != nil {
+        http.Error(w, "Problem jsonifying", http.StatusBadRequest)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(json)
+}
