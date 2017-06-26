@@ -35,22 +35,18 @@ export default {
   methods: {
     logout () {
       auth.logout()
-    },
-    refreshAuth () {
-      auth.refresh()
-    },
-    checkAuth () {
-      return auth.checkAuth()
     }
   },
   created () {
-    posts.getMine()
-    .then((res) => {
-      this.myPosts = (res.body)
-    })
-    .catch((err) => {
-      Errors.newErrRes(err)
-    })
+    if (auth.checkAuth()) {
+      posts.getMine()
+      .then((res) => {
+        this.myPosts = res.body
+      })
+      .catch((err) => {
+        Errors.newErrRes(err)
+      })
+    }
   }
 }
 </script>

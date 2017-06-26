@@ -10,11 +10,12 @@ import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './styles/main.scss'
 
+auth.init()
+console.log(auth.getToken())
+
 Vue.config.productionTip = false
 Vue.use(VueCookie)
 Vue.use(VueResource)
-
-auth.init()
 
 /* eslint-disable no-new */
 new Vue({
@@ -30,6 +31,7 @@ new Vue({
 })
 
 Vue.http.interceptors.push((req, next) => {
+  console.log('REQ')
   if (auth.checkAuth()) {
     req.headers.append('Authorization', auth.getToken())
   }

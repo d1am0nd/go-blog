@@ -3,6 +3,8 @@ package database
 import (
     "fmt"
     "time"
+
+    "database/sql"
 )
 
 const postT = "posts"
@@ -15,7 +17,7 @@ type Post struct {
     Slug string `db:"slug" json:"slug"`
     Content string `db:"content" json:"content"`
     Summary string `db:"summary" json:"summary"`
-    PublishedAt string `db:"published_at" json:"published_at"`
+    PublishedAt sql.NullString `db:"published_at" json:"published_at"`
     CreatedAt string `db:"created_at" json:"created_at"`
     UpdatedAt string `db:"updated_at" json:"updated_at"`
 }
@@ -26,8 +28,10 @@ func (p *Post) GetId() string {
     return r
 }
 
-func (p *Post) PublishedAtTime() time.Time {
-    return parseDbTimestamp(&p.PublishedAt)
+func (p *Post) GetUserId() string {
+    r := ""
+    r = fmt.Sprintf("%v", p.UserId)
+    return r
 }
 
 func (p *Post) CreatedAtTime() time.Time {
@@ -57,10 +61,29 @@ func FindActivePostBySlug(slug string) (Post, error) {
     return post, err
 }
 
+func FindMyPostBySlug(userId uint32, slug string) (Post, error) {
+    post := Post{}
+
+    err := SQL.Get(&post, "SELECT * FROM " + postT + " WHERE slug = ? AND (published_at < NOW() OR user_id = ?) LIMIT 1", slug, userId)
+    return post, err
+}
+
 func GetActivePosts() ([]Post, error) {
     posts := []Post{}
 
     err := SQL.Select(&posts, "SELECT * FROM posts WHERE published_at < NOW()")
+    return posts, err
+}
+
+func GetUsersPosts(userId uint32) ([]Post, error) {
+    posts := []Post{}
+
+    uid := fmt.Sprint(userId)
+
+    fmt.Println("GET USERS POSTS")
+    fmt.Println(uid)
+
+    err := SQL.Select(&posts, "SELECT * FROM posts WHERE user_id = ?", uid)
     return posts, err
 }
 

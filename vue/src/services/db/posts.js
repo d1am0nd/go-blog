@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import auth from '@/auth/auth'
 
 const POST_NEW_URL = '/api/posts/create'
 const POST_EDIT_URL = '/api/posts/edit/'
@@ -10,8 +11,7 @@ export default {
   new (post) {
     return Vue.http.post(POST_NEW_URL, post, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       emulateJSON: true,
       emulateHTTP: true
@@ -21,8 +21,7 @@ export default {
   update (post) {
     return Vue.http.post(POST_EDIT_URL + post.slug, post, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       emulateJSON: true,
       emulateHTTP: true
@@ -38,6 +37,13 @@ export default {
   },
 
   getMine () {
-    return Vue.http.get(GET_MINE_URL)
+    if (!auth.checkAuth()) {
+      return
+    }
+    return Vue.http.get(GET_MINE_URL, {
+      headers: {
+        'Authorization': auth.getToken()
+      }
+    })
   }
 }

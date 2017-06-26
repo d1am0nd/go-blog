@@ -43,6 +43,13 @@ func (u *User) IsEmpty() bool {
     return false
 }
 
+func FindUserById(id uint32) (User, error) {
+    user := User{}
+
+    err := SQL.Get(&user, "SELECT * FROM " + userT + " WHERE id = ? LIMIT 1", id)
+    return user, err
+}
+
 func FindUserByEmail(email string) (User, error) {
     user := User{}
 
