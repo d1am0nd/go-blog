@@ -72,6 +72,23 @@ func MyPosts(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     w.Write(json)
 }
 
+func CreatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    var userId = r.Context().Value("claims").(Claims).UserId
+    post := database.NewPost()
+
+    // Setting values
+    fillPost(r, &post)
+
+    err := database.CreatePost(&post, userId)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write([]byte("{success:true}"))
+}
+
 func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     var userId = r.Context().Value("claims").(Claims).UserId
 
@@ -91,6 +108,26 @@ func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     }
 
     // Setting values
+    fillPost(r, &post)
+
+    err = database.UpdatePostById(&post, userId, post.Id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    json, err := json.Marshal(post)
+    if err != nil {
+        http.Error(w, "Problem jsonifying", http.StatusBadRequest)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(json)
+}
+
+func fillPost(r *http.Request, post *database.Post) {
+    // Setting values
     active := r.FormValue("active")
     if active == "1" || active == "true" {
         post.Active = true
@@ -108,19 +145,4 @@ func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     post.Title = r.FormValue("title")
     post.Slug = r.FormValue("slug")
     post.Content = r.FormValue("content")
-
-    err = database.UpdatePostById(&post, userId, post.Id)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
-
-    json, err := json.Marshal(post)
-    if err != nil {
-        http.Error(w, "Problem jsonifying", http.StatusBadRequest)
-        return
-    }
-
-    w.Header().Set("Content-Type", "application/json")
-    w.Write(json)
 }

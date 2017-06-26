@@ -116,7 +116,7 @@ func CreatePost(post *Post, userId uint32) error {
     post.CreatedAt = timeToDb(&now)
     post.UpdatedAt = timeToDb(&now)
 
-    stmt, err := SQL.Prepare("INSERT INTO posts (active, user_id, title, slug, content, summary, published_at, created_at, updated_at")
+    stmt, err := SQL.Prepare("INSERT INTO posts (active, user_id, title, slug, content, summary, published_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
     if err != nil {
         return err
     }
