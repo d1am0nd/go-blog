@@ -11,7 +11,6 @@ import 'skeleton-css/css/skeleton.css'
 import './styles/main.scss'
 
 auth.init()
-console.log(auth.getToken())
 
 Vue.config.productionTip = false
 Vue.use(VueCookie)

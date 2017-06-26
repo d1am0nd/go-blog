@@ -19,7 +19,7 @@ export default {
   },
 
   update (post) {
-    return Vue.http.post(POST_EDIT_URL + post.slug, post, {
+    return Vue.http.post(POST_EDIT_URL + post.id, post, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },

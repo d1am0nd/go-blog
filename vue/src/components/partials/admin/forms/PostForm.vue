@@ -13,6 +13,14 @@
       <div class="six columns">
       </div>
     </div>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="six columns">
+        <label for="title">Slug</label>
+        {{ post.slug }}
+      </div>
+      <div class="six columns">
+      </div>
+    </div>
     <div class="row">
       <div class="twelve columns">
         <textarea
@@ -84,6 +92,15 @@ import dpconfig from '@/config/datepicker'
 import posts from '@/services/db/posts'
 import PostRender from '@/components/partials/post/PostRender'
 
+var slugify = (text) => {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w-]+/g, '')       // Remove all non-word chars
+    .replace(/--+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')             // Trim - from start of text
+    .replace(/-+$/, '')            // Trim - from end of text
+}
+
 export default {
   name: 'PostForm',
   props: ['post'],
@@ -104,7 +121,8 @@ export default {
   },
   watch: {
     'startTime.time': 'updatePublishedAt',
-    'post.published_at.String': 'updateStartTime'
+    'post.published_at.String': 'updateStartTime',
+    'post.title': 'updateSlug'
   },
   methods: {
     publish (post) {
@@ -132,6 +150,9 @@ export default {
     },
     updateStartTime (val) {
       this.startTime.time = val
+    },
+    updateSlug (val) {
+      this.post.slug = slugify(val)
     }
   }
 }

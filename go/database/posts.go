@@ -68,6 +68,13 @@ func FindMyPostBySlug(userId uint32, slug string) (Post, error) {
     return post, err
 }
 
+func FindOnlyMyPostById(userId uint32, id uint32) (Post, error) {
+    post := Post{}
+
+    err := SQL.Get(&post, "SELECT * FROM " + postT + " WHERE id = ? and user_id = ? LIMIT 1", id, userId)
+    return post, err
+}
+
 func FindOnlyMyPostBySlug(userId uint32, slug string) (Post, error) {
     post := Post{}
 
@@ -117,14 +124,14 @@ func CreatePost(post *Post, userId uint32) error {
     return err
 }
 
-func UpdatePostBySlug(post *Post, userId uint32, slug string) error {
+func UpdatePostById(post *Post, userId uint32, id uint32) error {
     now := time.Now()
     post.UpdatedAt = timeToDb(&now)
 
-    stmt, err := SQL.Prepare("UPDATE posts SET active=?, title=?, slug=?, content=?, summary=?, published_at=?, created_at=?, updated_at=? WHERE user_id = ?")
+    stmt, err := SQL.Prepare("UPDATE posts SET active=?, title=?, slug=?, content=?, summary=?, published_at=?, created_at=?, updated_at=? WHERE user_id = ? AND id = ?")
     if err != nil {
         return err
     }
-    _, err = stmt.Exec(post.Active, post.Title, post.Slug, post.Content, post.Summary, post.PublishedAt, post.CreatedAt, post.UpdatedAt, userId)
+    _, err = stmt.Exec(post.Active, post.Title, post.Slug, post.Content, post.Summary, post.PublishedAt, post.CreatedAt, post.UpdatedAt, userId, id)
     return err
 }

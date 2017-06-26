@@ -2,6 +2,7 @@ package server
 
 import (
     "fmt"
+    "strconv"
     "net/http"
     "encoding/json"
 
@@ -73,10 +74,16 @@ func MyPosts(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     var userId = r.Context().Value("claims").(Claims).UserId
-    slug := p.ByName("slug")
+
+    i64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
+    if err != nil {
+        http.Error(w, "Bad request", http.StatusBadRequest)
+        return
+    }
+    id := uint32(i64)
 
     // Find existing post or 404
-    post, err := database.FindOnlyMyPostBySlug(userId, slug)
+    post, err := database.FindOnlyMyPostById(userId, id)
     if err != nil {
         fmt.Println(err)
         http.Error(w, "Resource not found", http.StatusNotFound)
@@ -102,7 +109,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     post.Slug = r.FormValue("slug")
     post.Content = r.FormValue("content")
 
-    err = database.UpdatePostBySlug(&post, userId, slug)
+    err = database.UpdatePostById(&post, userId, post.Id)
     if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
