@@ -49,10 +49,10 @@ func Login(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     claims := NewClaims(user.Id, config.Jwt)
     token := CreateToken(claims, config.Jwt)
 
-    w.Header().Set("Authorization-Token", token)
+    w.Header().Set("Authorization", token)
 
     w.Header().Set("Content-Type", "application/json")
-    w.Write([]byte(token))
+    w.Write([]byte(rjson))
 }
 
 func CurrentUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

@@ -14,7 +14,8 @@ Vue.config.productionTip = false
 Vue.use(VueCookie)
 Vue.use(VueResource)
 
-auth.refresh()
+auth.init()
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -29,7 +30,13 @@ new Vue({
 })
 
 Vue.http.interceptors.push((req, next) => {
+  if (auth.checkAuth()) {
+    req.headers.append('Authorization', auth.getToken())
+  }
   next((res) => {
+    if (res.headers.has('Authorization')) {
+      auth.setAuth(true, res.headers.map.Authorization[0])
+    }
     /*
     if (res.status === 403) {
       auth.logoutFront()

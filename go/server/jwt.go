@@ -41,7 +41,7 @@ func CreateToken(claims Claims, jwtConfig JwtConfig) string {
     if(err != nil) {
         panic(err)
     }
-    return tokenString
+    return "Bearer " + tokenString
 }
 
 func ValidateToken(myToken string, jwtConfig JwtConfig) (Claims, error) {

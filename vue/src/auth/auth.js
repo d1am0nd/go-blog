@@ -1,110 +1,134 @@
 import Vue from 'vue'
 import Errors from '@/errors'
-import router from '@/router'
 
 const LOGIN_URL = '/api/users/login'
 const REGISTER_URL = '/api/users/register'
 const LOGOUT_URL = '/api/users/logout'
 const REFRESH_URL = '/api/users/current'
 
+const USER_SESS = 'user'
+const TOKEN_SESS = 'bearer'
+
 export default {
   user: {},
-  check: true,
+  token: '',
+  check: false,
+  init () {
+    if (sessionStorage.getItem(USER_SESS) !== null && sessionStorage.getItem(TOKEN_SESS) !== null) {
+      this.token = sessionStorage.getItem(TOKEN_SESS)
+      this.user = JSON.parse(sessionStorage.getItem(USER_SESS))
+      this.check = true
+    }
+  },
   login (ctx, creds, redirect) {
     Vue.http.post(LOGIN_URL, creds, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       emulateJSON: true,
       emulateHTTP: true
     })
     .then((res) => {
-      this.auth(res.body, true)
-      router.push({ name: 'home' })
+      var header = res.headers.map.Authorization[0]
+      this.setAuth(true, header, res.body)
     })
     .catch((err) => {
       Errors.newErrRes(err)
-      sessionStorage.removeItem('user')
-      this.auth({}, false)
-      router.push({ name: 'home' })
     })
   },
 
   register (ctx, creds, redirect) {
     Vue.http.post(REGISTER_URL, creds, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       emulateJSON: true,
       emulateHTTP: true
     })
     .then((res) => {
       this.auth(res.body, true)
-      router.push({ name: 'home' })
     })
     .catch((err) => {
       Errors.newErrRes(err)
-      sessionStorage.removeItem('user')
-      this.auth({}, false)
-      router.push({ name: 'home' })
     })
   },
 
   logout () {
     Vue.http.get(LOGOUT_URL)
     .then((res) => {
-      sessionStorage.removeItem('user')
-      this.auth({}, false)
-      router.push({ name: 'home' })
+      this.setAuth(false)
     })
     .catch((err) => {
       Errors.newErrRes(err)
-      sessionStorage.removeItem('user')
-      this.auth({}, false)
-      router.push({ name: 'home' })
+      this.setAuth(false)
     })
   },
 
   logoutFront () {
-    sessionStorage.removeItem('user')
-    this.user = null
-    router.push({ name: 'home' })
+    this.setAuth(false)
   },
 
-  refresh () {
-    Vue.http.get(REFRESH_URL)
+  refresh (token = null) {
+    var headers = {}
+    if (token !== null) {
+      this.token = token
+      headers.Authorization = token
+      sessionStorage.setItem(TOKEN_SESS, token)
+    }
+
+    Vue.http.get(REFRESH_URL, {
+      headers: headers
+    })
     .then((res) => {
-      this.auth(res.body, true)
+      if (res.status === 200) {
+        var header = res.headers.map.Authorization[0]
+        this.setAuth(true, header, res.body)
+      } else {
+        this.setAuth(false)
+      }
     })
     .catch((err) => {
-      sessionStorage.removeItem('user')
-      this.auth({}, false)
       Errors.newErrRes(err)
+      this.setAuth(false)
     })
+  },
+
+  setAuth (check, token = null, user = null) {
+    if (check === true && this.check === false) {
+      if (user !== null) {
+        this.user = user
+        this.token = token
+        this.check = true
+        sessionStorage.setItem(USER_SESS, JSON.stringify(user))
+        sessionStorage.setItem(TOKEN_SESS, token)
+      } else {
+        this.refresh(token)
+      }
+    } else if (check === false) {
+      this.user = null
+      this.token = null
+      this.check = false
+      sessionStorage.removeItem(USER_SESS)
+      sessionStorage.removeItem(TOKEN_SESS)
+    }
   },
 
   getUser () {
     if (this.checkAuth()) {
-      return JSON.parse(sessionStorage.getItem('user'))
+      return JSON.parse(sessionStorage.getItem(USER_SESS))
     } else {
       return null
     }
   },
 
-  checkAuth () {
-    return sessionStorage.getItem('user') !== null
+  getToken () {
+    if (this.checkAuth()) {
+      return sessionStorage.getItem(TOKEN_SESS)
+    }
+    return null
   },
 
-  auth (user, check) {
-    if (check) {
-      sessionStorage.setItem('user', user)
-      this.user = JSON.parse(user)
-    } else {
-      sessionStorage.removeItem('user')
-      this.user = {}
-    }
-    this.check = check
+  checkAuth () {
+    return this.check === true
   }
 }
