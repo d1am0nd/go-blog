@@ -40,7 +40,6 @@ func Login(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
         return
     }
 
-
     claims := NewClaims(user.Id, config.Jwt)
     token := CreateToken(claims, config.Jwt)
 

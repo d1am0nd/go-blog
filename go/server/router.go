@@ -10,7 +10,6 @@ import (
 func NewRouter() *httprouter.Router {
     r := httprouter.New()
 
-
     r.GET("/api/users/current", AuthOnly(CurrentUser))
     r.POST("/api/users/login", Login)
     r.GET("/api/posts/all", WithUser(ActivePosts))
@@ -18,6 +17,7 @@ func NewRouter() *httprouter.Router {
     r.POST("/api/posts/create", AuthOnly(CreatePost))
     r.GET("/api/posts/my/all", AuthOnly(MyPosts))
     r.GET("/api/posts/single/:slug", WithUser(PostBySlug))
+    r.GET("/api/images/all", AuthOnly(AllImages))
     r.ServeFiles("/static/*filepath", http.Dir("../public"))
 
     r.GET("/login", Home)
