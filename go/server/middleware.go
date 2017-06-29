@@ -1,6 +1,7 @@
 package server
 
 import (
+    "regexp"
     "strings"
     "net/http"
 
@@ -10,6 +11,17 @@ import (
     "github.com/julienschmidt/httprouter"
 )
 
+func g(h httprouter.Handle) httprouter.Handle {
+    return func (w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+        m, _ := regexp.Match("^/(api|static).*", []byte(r.URL.Path))
+        if (m) {
+            w.Write([]byte(r.URL.Path))
+        }
+        return
+        Home(w, r, p)
+    }
+}
+
 func AuthOnly(h httprouter.Handle) httprouter.Handle {
     return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
         tokenHeader := r.Header.Get("Authorization")
@@ -18,7 +30,7 @@ func AuthOnly(h httprouter.Handle) httprouter.Handle {
 
         claims, err := ValidateToken(token, config.Jwt)
 
-        if(err != nil) {
+        if (err != nil) {
             http.Error(w, "Authorization failed", http.StatusUnauthorized)
             return
         }
@@ -40,7 +52,7 @@ func WithUser(h httprouter.Handle) httprouter.Handle {
 
         claims, err := ValidateToken(token, config.Jwt)
 
-        if(err != nil) {
+        if (err != nil) {
             h(w, r, p)
             return
         }
