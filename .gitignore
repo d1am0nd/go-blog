@@ -4,6 +4,5 @@
 /config/env.json
 /vue/node_modules
 /public/index.html
-/public/static/*
 /public/uploads
 /go/main
