@@ -3,6 +3,5 @@
 /config/page.json
 /config/env.json
 /vue/node_modules
-/public/index.html
 /public/uploads
 /go/main
