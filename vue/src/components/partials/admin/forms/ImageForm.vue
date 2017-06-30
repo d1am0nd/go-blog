@@ -25,7 +25,8 @@
     </div>
     <div class="row" v-if="image.name != ''">
       <div class="twelve columns">
-        <img v-if="image.image !== ''" :src="image.image" />
+        <img :src="image.path" />
+        <img :src="image.image" />
       </div>
     </div>
     <div class="row">
@@ -100,11 +101,9 @@ export default {
 
       reader.onload = (e) => {
         vm.image.image = e.target.result
+        vm.image.path = ''
       }
       reader.readAsDataURL(file)
-    },
-    removeImage: function (e) {
-      this.image.image = ''
     }
   }
 }
