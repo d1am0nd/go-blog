@@ -13,21 +13,15 @@ export default {
   new (image) {
     return Vue.http.post(POST_NEW_URL, image, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
-      },
-      emulateJSON: true,
-      emulateHTTP: true
+        'Content-Type': 'multipart/form-data'
+      }
     })
   },
   update (image) {
     return Vue.http.post(POST_EDIT_URL + image.id, image, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
-      },
-      emulateJSON: true,
-      emulateHTTP: true
+        'Content-Type': 'multipart/form-data'
+      }
     })
   },
   deleteById (id) {

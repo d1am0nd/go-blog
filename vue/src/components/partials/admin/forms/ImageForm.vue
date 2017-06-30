@@ -16,6 +16,7 @@
     <div class="row" v-if="image.name != ''">
       <div class="twelve columns">
         <input
+          id="image-upload-input"
           type="file"
           name="image"
           accept="image/*"
@@ -46,26 +47,21 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import Errors from '@/errors'
 import images from '@/services/db/images'
 
 export default {
   name: 'ImageForm',
   props: ['image'],
-  data () {
-    return {
-      src: 'http://img1.vued.vanthink.cn/vued0a233185b6027244f9d43e653227439a.png',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-XSRF-TOKEN': Vue.cookie.get('XSRF-TOKEN')
-      }
-    }
-  },
   methods: {
     post (image) {
+      var formData = new FormData()
+      var fileDom = document.getElementById('image-upload-input')
+      formData.set('image', fileDom.files[0])
+      formData.set('name', image.name)
+
       if (image.id) {
-        images.update(image)
+        images.update(formData)
         .then((res) => {
           this.image + res.body
         })
@@ -73,7 +69,7 @@ export default {
           Errors.newErrRes(res)
         })
       } else {
-        images.new(image)
+        images.new(formData)
         .then((res) => {
           this.$router.push({ name: 'images' })
         })
