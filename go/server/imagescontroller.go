@@ -3,7 +3,6 @@ package server
 import (
     "os"
     "io"
-    "fmt"
     "strconv"
     "net/http"
     "encoding/json"
@@ -116,6 +115,28 @@ func UpdateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
     w.Header().Set("Content-Type", "application/json")
     w.Write(json)
+}
+
+func DeleteImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    userId := r.Context().Value("claims").(Claims).UserId
+
+    i64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
+    if err != nil {
+        http.Error(w, "Bad request", http.StatusBadRequest)
+        return
+    }
+    id := uint32(i64)
+
+    img, err := database.FindUsersImageById(userId, id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+
+    DeleteIfExists("./../public/uploads/" + img.Path)
+    database.DeleteUsersImageById(userId, id)
+
+    w.Write([]byte("yeah"))
 }
 
 /**

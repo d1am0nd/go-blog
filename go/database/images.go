@@ -90,3 +90,12 @@ func UpdateImageById(image *Image, userId uint32, id uint32) error {
     _, err = stmt.Exec(image.Path, image.Name, userId, id)
     return err
 }
+
+func DeleteUsersImageById(userId uint32, id uint32) error {
+    stmt, err := SQL.Prepare("DELETE FROM " + imageT + " WHERE id = ? AND user_id = ?")
+    if err != nil {
+        return err
+    }
+    _, err = stmt.Exec(id, userId)
+    return err
+}

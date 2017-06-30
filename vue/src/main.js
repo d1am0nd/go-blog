@@ -30,7 +30,6 @@ new Vue({
 })
 
 Vue.http.interceptors.push((req, next) => {
-  console.log('REQ')
   if (auth.checkAuth()) {
     req.headers.append('Authorization', auth.getToken())
   }
@@ -38,11 +37,5 @@ Vue.http.interceptors.push((req, next) => {
     if (res.headers.has('Authorization')) {
       auth.setAuth(true, res.headers.map.Authorization[0])
     }
-    /*
-    if (res.status === 403) {
-      auth.logoutFront()
-    }
-    vm.user = auth.user
-    */
   })
 })
