@@ -3,7 +3,7 @@ import Vue from 'vue'
 const POST_NEW_URL = '/api/images/create'
 const POST_EDIT_URL = '/api/images/edit/'
 const GET_IMAGES_URL = '/api/images/all'
-const GET_BY_ID_URL = '/api/images/'
+const GET_BY_ID_URL = '/api/images/single/'
 const GET_DELETE_BY_ID = '/api/images/delete/'
 /*
 const GET_MINE_URL = '/api/images/my/all'
@@ -17,8 +17,8 @@ export default {
       }
     })
   },
-  update (image) {
-    return Vue.http.post(POST_EDIT_URL + image.id, image, {
+  update (image, id) {
+    return Vue.http.post(POST_EDIT_URL + id, image, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

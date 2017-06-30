@@ -61,7 +61,7 @@ export default {
       formData.set('name', image.name)
 
       if (image.id) {
-        images.update(formData)
+        images.update(formData, image.id)
         .then((res) => {
           this.image + res.body
         })

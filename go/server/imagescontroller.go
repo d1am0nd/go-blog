@@ -13,10 +13,32 @@ import (
     "github.com/julienschmidt/httprouter"
 )
 
+func ImageById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    i64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
+    if err != nil {
+        http.Error(w, "Bad request", http.StatusBadRequest)
+        return
+    }
+    id := uint32(i64)
+
+    image, err := database.FindImageById(id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+    rjson, err := json.Marshal(image)
+    if err != nil {
+        http.Error(w, "Problem jsonifying", http.StatusBadRequest)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(rjson)
+}
+
 func AllImages(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     images, err := database.GetAllImages()
     if err != nil {
-        fmt.Println(err)
         http.Error(w, "Resource not found", http.StatusNotFound)
         return
     }
@@ -33,13 +55,13 @@ func AllImages(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 func CreateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     imgName, err := saveFileToDir(r, "image")
     if err != nil {
-        http.Error(w, err.Error(), 219)
+        http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
     var userId = r.Context().Value("claims").(Claims).UserId
     img := database.NewImage()
-    img.Path = "/static/uploads/" + imgName
+    img.Path = imgName
     fillImage(r, &img)
 
     err = database.CreateImage(&img, userId)
@@ -50,6 +72,50 @@ func CreateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
     w.Header().Set("Content-Type", "application/json")
     w.Write([]byte(imgName))
+}
+
+func UpdateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    userId := r.Context().Value("claims").(Claims).UserId
+
+    i64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
+    if err != nil {
+        http.Error(w, "Bad request", http.StatusBadRequest)
+        return
+    }
+    id := uint32(i64)
+
+    img, err := database.FindUsersImageById(userId, id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+
+    _, _, err = r.FormFile("image")
+    if err == nil {
+        DeleteIfExists("./../public/uploads/" + img.Path)
+        imgName, err := saveFileToDir(r, "image")
+        if err == nil {
+            img.Path = imgName
+        }
+    }
+    err = nil
+
+    fillImage(r, &img)
+
+    err = database.UpdateImageById(&img, userId, img.Id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    json, err := json.Marshal(img)
+    if err != nil {
+        http.Error(w, "Problem jsonifying", http.StatusBadRequest)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(json)
 }
 
 /**

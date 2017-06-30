@@ -50,8 +50,22 @@ func (i *Image) IsEmpty() bool {
 func GetAllImages() ([]Image, error) {
     images := []Image{}
 
-    err := SQL.Select(&images, "SELECT * FROM " + imageT)
+    err := SQL.Select(&images, "SELECT *, CONCAT('/static/uploads/', " + imageT + ".path) as path FROM " + imageT)
     return images, err
+}
+
+func FindImageById(id uint32) (Image, error) {
+    image := Image{}
+
+    err := SQL.Get(&image, "SELECT *, CONCAT('/static/uploads/', " + imageT + ".path) as path FROM " + imageT + " WHERE id = ?", id)
+    return image, err
+}
+
+func FindUsersImageById(userId uint32, id uint32) (Image, error) {
+    image := Image{}
+
+    err := SQL.Get(&image, "SELECT * FROM " + imageT + " WHERE id = ? AND user_id = ?", id, userId)
+    return image, err
 }
 
 func CreateImage(image *Image, userId uint32) error {
@@ -65,5 +79,14 @@ func CreateImage(image *Image, userId uint32) error {
         return err
     }
     _, err = stmt.Exec(userId, image.Path, image.Name, image.CreatedAt, image.UpdatedAt)
+    return err
+}
+
+func UpdateImageById(image *Image, userId uint32, id uint32) error {
+    now := time.Now()
+    image.UpdatedAt = timeToDb(&now)
+
+    stmt, err := SQL.Prepare("UPDATE " + imageT + " SET path=?, name=? WHERE user_id=? AND id=?")
+    _, err = stmt.Exec(image.Path, image.Name, userId, id)
     return err
 }

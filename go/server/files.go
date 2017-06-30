@@ -43,6 +43,12 @@ func GetFilesInDir(dir string) ([]File, error) {
     return fslice, nil
 }
 
+func DeleteIfExists(path string) error {
+    err := os.Remove(path)
+    fmt.Println(err)
+    return err
+}
+
 func FileExists(path string) bool {
     if _, err := os.Stat(path); os.IsNotExist(err) {
         return false

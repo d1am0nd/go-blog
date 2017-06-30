@@ -37,6 +37,7 @@ export default {
     fetchData () {
       images.getById(this.$route.params.id)
       .then((res) => {
+        console.log(res.body)
         this.image = res.body
       })
       .catch((err) => {
