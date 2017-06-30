@@ -1,6 +1,6 @@
 <template>
   <section class="header">
-    <div class="title">Hip Hop Blog</div>
+    <div class="title">{{ navTitle }}</div>
     <div class="row">
       <div class="twelve columns">
         <ul>
@@ -15,12 +15,14 @@
 
 <script>
 import auth from '@/auth/auth'
+import config from '@/../../config/page.json'
 
 export default {
   name: 'Header',
   data () {
     return {
-      auth: this.$root.auth
+      auth: this.$root.auth,
+      navTitle: config.nav_title
     }
   },
   methods: {

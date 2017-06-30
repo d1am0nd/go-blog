@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Hip Hop Blog</h1>
+    <h1>{{ title }}</h1>
 
     <div class="row" v-for="post in posts">
       <div class="col-md-12">
@@ -15,6 +15,7 @@ import QuickPost from '@/components/partials/post/QuickPostRender'
 import Errors from '@/errors'
 import posts from '@/services/db/posts'
 import Meta from '@/config/head'
+import config from '@/../../config/page.json'
 
 export default {
   name: 'hello',
@@ -23,13 +24,14 @@ export default {
   },
   data () {
     return {
-      posts: []
+      posts: [],
+      title: config.home_title
     }
   },
   created () {
     this.fetchData()
     Meta.title('Home')
-    Meta.description('Hip hop and battle rap opinions. Most opinionated hip hop blog')
+    Meta.description(config.meta_description)
   },
   methods: {
     fetchData () {

@@ -1,4 +1,6 @@
 /config/database.json
 /config/jwt.json
+/config/page.json
+/config/env.json
 /vue/node_modules
 /public/uploads

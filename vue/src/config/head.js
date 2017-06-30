@@ -1,4 +1,6 @@
-const defTitle = 'Hip Hop Blog'
+import config from '@/../../config/page.json'
+
+const defTitle = config.meta_title
 
 var meta = {}
 
