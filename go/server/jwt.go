@@ -1,7 +1,6 @@
 package server
 
 import (
-    "fmt"
     "time"
 
     "github.com/dgrijalva/jwt-go"
@@ -47,7 +46,7 @@ func CreateToken(claims Claims, jwtConfig JwtConfig) string {
 func ValidateToken(myToken string, jwtConfig JwtConfig) (Claims, error) {
     claims := Claims{}
 
-    token, err := jwt.ParseWithClaims(myToken, &claims, func(token *jwt.Token) (interface{}, error) {
+    _, err := jwt.ParseWithClaims(myToken, &claims, func(token *jwt.Token) (interface{}, error) {
         return []byte(jwtConfig.GetSecret()), nil
     })
 
