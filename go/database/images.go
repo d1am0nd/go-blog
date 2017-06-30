@@ -50,14 +50,14 @@ func (i *Image) IsEmpty() bool {
 func GetAllImages() ([]Image, error) {
     images := []Image{}
 
-    err := SQL.Select(&images, "SELECT *, CONCAT('/static/uploads/', " + imageT + ".path) as path FROM " + imageT)
+    err := SQL.Select(&images, "SELECT *, CONCAT('/uploads/', " + imageT + ".path) as path FROM " + imageT)
     return images, err
 }
 
 func FindImageById(id uint32) (Image, error) {
     image := Image{}
 
-    err := SQL.Get(&image, "SELECT *, CONCAT('/static/uploads/', " + imageT + ".path) as path FROM " + imageT + " WHERE id = ?", id)
+    err := SQL.Get(&image, "SELECT *, CONCAT('/uploads/', " + imageT + ".path) as path FROM " + imageT + " WHERE id = ?", id)
     return image, err
 }
 

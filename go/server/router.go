@@ -22,7 +22,8 @@ func NewRouter() *httprouter.Router {
     r.POST("/api/images/create", AuthOnly(CreateImage))
     r.POST("/api/images/edit/:id", AuthOnly(UpdateImage))
     r.GET("/api/images/delete/:id", AuthOnly(DeleteImage))
-    r.ServeFiles("/static/*filepath", http.Dir("../public"))
+    r.ServeFiles("/static/*filepath", http.Dir("../public/static"))
+    r.ServeFiles("/uploads/*filepath", http.Dir("../public/uploads"))
 
     /* These have to match the ones in vue router and redirect to Home */
     r.GET("/login", Home)

@@ -94,9 +94,6 @@ func GetUsersPosts(userId uint32) ([]Post, error) {
 
     uid := fmt.Sprint(userId)
 
-    fmt.Println("GET USERS POSTS")
-    fmt.Println(uid)
-
     err := SQL.Select(&posts, "SELECT * FROM posts WHERE user_id = ?", uid)
     return posts, err
 }

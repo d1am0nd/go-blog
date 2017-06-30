@@ -51,13 +51,5 @@ func ValidateToken(myToken string, jwtConfig JwtConfig) (Claims, error) {
         return []byte(jwtConfig.GetSecret()), nil
     })
 
-    fmt.Println(claims.ExpiresAt)
-
-    if err == nil && token.Valid {
-        fmt.Println("Your token is valid.  I like your style.")
-    } else {
-        fmt.Println("This token is terrible!  I cannot accept this.")
-    }
-
     return claims, err
 }

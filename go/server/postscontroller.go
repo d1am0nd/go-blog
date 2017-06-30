@@ -58,7 +58,6 @@ func MyPosts(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     var userId = r.Context().Value("claims").(Claims).UserId
     posts, err := database.GetUsersPosts(userId)
     if err != nil {
-        fmt.Println(err)
         http.Error(w, "Resource not found", http.StatusNotFound)
         return
     }
@@ -102,7 +101,6 @@ func UpdatePost(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     // Find existing post or 404
     post, err := database.FindOnlyMyPostById(userId, id)
     if err != nil {
-        fmt.Println(err)
         http.Error(w, "Resource not found", http.StatusNotFound)
         return
     }

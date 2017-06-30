@@ -45,7 +45,6 @@ func GetFilesInDir(dir string) ([]File, error) {
 
 func DeleteIfExists(path string) error {
     err := os.Remove(path)
-    fmt.Println(err)
     return err
 }
 
