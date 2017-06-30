@@ -53,3 +53,17 @@ func GetAllImages() ([]Image, error) {
     err := SQL.Select(&images, "SELECT * FROM " + imageT)
     return images, err
 }
+
+func CreateImage(image *Image, userId uint32) error {
+    now := time.Now()
+
+    image.CreatedAt = timeToDb(&now)
+    image.UpdatedAt = timeToDb(&now)
+
+    stmt, err := SQL.Prepare("INSERT INTO " + imageT + " (user_id, path, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
+    if err != nil {
+        return err
+    }
+    _, err = stmt.Exec(userId, image.Path, image.Name, image.CreatedAt, image.UpdatedAt)
+    return err
+}

@@ -31,9 +31,20 @@ func AllImages(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 }
 
 func CreateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-    imgName, err := saveImageToDir(r, "image")
+    imgName, err := saveFileToDir(r, "image")
     if err != nil {
         http.Error(w, err.Error(), 219)
+        return
+    }
+
+    var userId = r.Context().Value("claims").(Claims).UserId
+    img := database.NewImage()
+    img.Path = "/static/uploads/" + imgName
+    fillImage(r, &img)
+
+    err = database.CreateImage(&img, userId)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
@@ -41,7 +52,10 @@ func CreateImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
     w.Write([]byte(imgName))
 }
 
-func saveImageToDir(r *http.Request, key string) (string, error){
+/**
+ * Takes r *request and key string, where key is the name of the form field (of image)
+ */
+func saveFileToDir(r *http.Request, key string) (string, error){
     r.ParseMultipartForm(32 << 20)
     image, handler, err := r.FormFile(key)
     defer image.Close()
@@ -66,4 +80,12 @@ func saveImageToDir(r *http.Request, key string) (string, error){
     }
     io.Copy(f, image)
     return fname, err
+}
+
+
+/**
+ * Fills image (from requeest) to save to db
+ */
+func fillImage(r *http.Request, image *database.Image) {
+    image.Name = r.FormValue("name")
 }

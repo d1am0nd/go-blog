@@ -18,7 +18,7 @@ func NewRouter() *httprouter.Router {
     r.GET("/api/posts/my/all", AuthOnly(MyPosts))
     r.GET("/api/posts/single/:slug", WithUser(PostBySlug))
     r.GET("/api/images/all", AuthOnly(AllImages))
-    r.POST("/api/images/create", (CreateImage))
+    r.POST("/api/images/create", AuthOnly(CreateImage))
     r.ServeFiles("/static/*filepath", http.Dir("../public"))
 
     /* These have to match the ones in vue router and redirect to Home */
