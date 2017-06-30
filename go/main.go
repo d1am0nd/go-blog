@@ -12,25 +12,13 @@ import (
 func main() {
     fmt.Println("Hello world!")
 
-    router := server.NewRouter()
-
-    database.Connect("root:@tcp(localhost:3306)/hiphop_blog")
-
-    p, err := database.FindActivePostBySlug("test")
-
-    fmt.Println(err)
-    fmt.Println(p)
-
-    a, er := database.GetActivePosts()
-
-    fmt.Println(er)
-    fmt.Println(a)
-
     config.Init()
 
-    fmt.Println(config.Mysql.DSN())
+    router := server.NewRouter()
 
-    fmt.Println(config.Jwt)
+    database.Connect(config.Mysql.DSN())
+
+    fmt.Println("Serving on port :3000")
 
     http.ListenAndServe(":3000", router)
 }
