@@ -8,6 +8,7 @@ import (
 
 var Mysql MysqlConf
 var Jwt JwtConf
+var Env EnvConf
 
 type MysqlConf struct {
     Username    string  `json: username`
@@ -23,9 +24,14 @@ type JwtConf struct {
     Issuer      string `json: issuer`
 }
 
+type EnvConf struct {
+    Env string `json: "env"`
+}
+
 func Init() {
     Mysql = GetMysqlConf()
     Jwt = GetJwtConf()
+    Env = GetEnvConf()
 }
 
 // MysqlConf
@@ -84,4 +90,25 @@ func (j JwtConf) GetIssuer() string {
 
 func (j JwtConf) GetSecret() string {
     return j.Secret
+}
+
+func (c EnvConf) IsProd() bool {
+    if c.Env == "prod" || c.Env == "production" {
+        return true
+    }
+    return false
+}
+
+func GetEnvConf() EnvConf {
+    file, err := os.Open("../config/env.json")
+
+    decoder := json.NewDecoder(file)
+    configuration := EnvConf{}
+
+    err = decoder.Decode(&configuration)
+    if err != nil {
+        panic(err)
+    }
+
+    return configuration
 }
