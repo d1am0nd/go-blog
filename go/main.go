@@ -20,5 +20,12 @@ func main() {
 
     fmt.Println("Serving on port :3000")
 
+    fmt.Println("ENV: " + config.Env.Env)
+    if config.Env.IsProd() {
+        fmt.Println("PRODUCTION")
+    } else {
+        fmt.Println("Not production")
+    }
+
     http.ListenAndServe(":3000", router)
 }
