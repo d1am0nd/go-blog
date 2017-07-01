@@ -26,6 +26,7 @@ type JwtConf struct {
 
 type EnvConf struct {
     Env string `json: "env"`
+    Port string `json: "port"`
 }
 
 func Init() {
