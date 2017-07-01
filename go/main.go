@@ -18,7 +18,7 @@ func main() {
 
     database.Connect(config.Mysql.DSN())
 
-    fmt.Println("Serving on port :3000")
+    fmt.Println("Serving on port " + config.Env.Port)
 
     fmt.Println("ENV: " + config.Env.Env)
     if config.Env.IsProd() {
@@ -27,5 +27,5 @@ func main() {
         fmt.Println("Not production")
     }
 
-    http.ListenAndServe(":3000", router)
+    http.ListenAndServe(config.Env.Port, router)
 }
