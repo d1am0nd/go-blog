@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Header from './components/general/Header'
+import Header from '@/components/general/Header'
 import AdminHeader from '@/components/general/AdminHeader'
 
 export default {

@@ -1,10 +1,9 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import VueCookie from 'vue-cookie'
 import VueResource from 'vue-resource'
-import App from './App'
-import router from './router'
+import App from '@/App'
+import router from '@/router'
 import auth from '@/auth/auth'
 import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
@@ -13,7 +12,6 @@ import './styles/main.scss'
 auth.init()
 
 Vue.config.productionTip = false
-Vue.use(VueCookie)
 Vue.use(VueResource)
 
 /* eslint-disable no-new */
