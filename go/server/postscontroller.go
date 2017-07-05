@@ -141,5 +141,6 @@ func fillPost(r *http.Request, post *database.Post) {
     }
     post.Title = r.FormValue("title")
     post.Slug = r.FormValue("slug")
+    post.Summary = r.FormValue("summary")
     post.Content = r.FormValue("content")
 }
