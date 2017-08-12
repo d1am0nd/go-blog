@@ -14,20 +14,50 @@
 
 <script>
 import marked from 'marked'
+var renderer = new marked.Renderer()
+console.log(renderer)
+renderer.link = (href, title, text) => {
+  if (renderer.options.sanitize) {
+    try {
+      var prot = decodeURIComponent(unescape(href))
+        .replace(/[^\w:]/g, '')
+        .toLowerCase()
+    } catch (e) {
+      return ''
+    }
+    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+      return ''
+    }
+  }
+  var out = '<a href="' + href + '"'
+  out += ' target="_blank"'
+  if (title) {
+    out += ' title="' + title + '"'
+  }
+  out += '>' + text + '</a>'
+  return out
+}
 
 export default {
   name: 'PostRender',
   props: ['post'],
   computed: {
     compiledMarkdown () {
-      return marked(this.post.content, { renderer: false, sanitize: true })
+      return marked(this.post.content, { renderer: renderer, sanitize: true })
     }
   }
 }
 </script>
-<style type="text/css" scoped>
-/* Responsive images */
-
+<style type="text/css">
+/* Responsive images and centered */
+.post-content-render img {
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 0%);
+}
 
 /* Post design */
 .post-summary-render {
