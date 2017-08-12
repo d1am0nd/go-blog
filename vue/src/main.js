@@ -33,7 +33,7 @@ Vue.http.interceptors.push((req, next) => {
   }
   next((res) => {
     if (res.headers.has('Authorization')) {
-      auth.setAuth(true, res.headers.map.Authorization[0])
+      auth.setAuth(true, res.headers.get('Authorization'))
     }
   })
 })

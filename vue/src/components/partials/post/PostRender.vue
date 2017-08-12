@@ -25,7 +25,11 @@ export default {
   }
 }
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
+/* Responsive images */
+
+
+/* Post design */
 .post-summary-render {
   font-size: 24px;
   letter-spacing: 2px;

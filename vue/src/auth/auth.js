@@ -29,7 +29,7 @@ export default {
       emulateHTTP: true
     })
     .then((res) => {
-      var header = res.headers.map.Authorization[0]
+      var header = res.headers.get('Authorization')
       this.setAuth(true, header, res.body)
     })
     .catch((err) => {
@@ -81,7 +81,7 @@ export default {
     })
     .then((res) => {
       if (res.status === 200) {
-        var header = res.headers.map.Authorization[0]
+        var header = res.headers.get('Authorization')
         this.setAuth(true, header, res.body)
       } else {
         this.setAuth(false)
