@@ -1,6 +1,7 @@
 <template>
   <section class="PostRender">
     <h1>{{ post.title }}</h1>
+    <span id="published-at">{{ post.published_at.String }}</span>
     <div
       class="post-summary-render">
       {{ post.summary }}
@@ -15,7 +16,6 @@
 <script>
 import marked from 'marked'
 var renderer = new marked.Renderer()
-console.log(renderer)
 renderer.link = (href, title, text) => {
   if (renderer.options.sanitize) {
     try {

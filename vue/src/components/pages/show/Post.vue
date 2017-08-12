@@ -35,7 +35,7 @@ export default {
         summary: '',
         content: '',
         active: 0,
-        published_at: ''
+        published_at: {}
       }
     }
   },
@@ -52,6 +52,7 @@ export default {
         this.post = res.body
         Meta.title(this.post.title)
         Meta.description(this.post.summary)
+        console.log(this.post)
       })
       .catch((err) => {
         Errors.newErrRes(err)
