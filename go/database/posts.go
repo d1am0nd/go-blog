@@ -85,7 +85,7 @@ func FindOnlyMyPostBySlug(userId uint32, slug string) (Post, error) {
 func GetActivePosts() ([]Post, error) {
     posts := []Post{}
 
-    err := SQL.Select(&posts, "SELECT * FROM posts WHERE published_at < NOW()")
+    err := SQL.Select(&posts, "SELECT * FROM posts WHERE published_at < NOW() ORDER BY published_at DESC")
     return posts, err
 }
 
