@@ -1,6 +1,7 @@
 <template>
   <section class="QuickPostRender">
     <h2>{{ post.title }}</h2>
+    <span>{{ post.published_at.String }}</span>
     <div
       class="post-summary-render">
       {{ post.summary }}
