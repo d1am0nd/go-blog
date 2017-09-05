@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {}
+    user: {},
+    posts: []
   },
   getters: {
     user (state) {
@@ -14,8 +15,8 @@ export default new Vuex.Store({
     loggedIn (state) {
       return !(Object.keys(state.user).length === 0 && state.user.constructor === Object)
     },
-    token (state) {
-      return state.token
+    posts (state) {
+      return state.posts
     }
   },
   mutations: {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     },
     logout (state) {
       state.user = {}
+    },
+    setPosts (state, posts) {
+      state.posts = posts
     }
   }
 })

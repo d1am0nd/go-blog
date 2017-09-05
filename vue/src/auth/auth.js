@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import store from '@/store'
 import Errors from '@/errors'
+import posts from '@/services/db/posts'
 
 const LOGIN_URL = '/api/users/login'
-const REGISTER_URL = '/api/users/register'
+// const REGISTER_URL = '/api/users/register'
 const LOGOUT_URL = '/api/users/logout'
 const REFRESH_URL = '/api/users/current'
 
@@ -15,6 +16,10 @@ export default {
   init () {
     if (sessionStorage.getItem(USER_SESS) !== null && sessionStorage.getItem(TOKEN_SESS) !== null) {
       store.commit('login', JSON.parse(sessionStorage.getItem(USER_SESS)), sessionStorage.getItem(TOKEN_SESS))
+      posts.getMine()
+      .then((res) => {
+        store.commit('setPosts', res.body)
+      })
     }
   },
   login (ctx, creds, redirect) {
@@ -28,12 +33,17 @@ export default {
     .then((res) => {
       var header = res.headers.get('Authorization')
       this.setAuth(true, header, res.body)
+
+      posts.getMine()
+      .then((res) => {
+        store.commit('setPosts', res.body)
+      })
     })
     .catch((err) => {
       Errors.newErrRes(err)
     })
   },
-
+  /*
   register (ctx, creds, redirect) {
     Vue.http.post(REGISTER_URL, creds, {
       headers: {
@@ -49,6 +59,7 @@ export default {
       Errors.newErrRes(err)
     })
   },
+  */
 
   logout () {
     Vue.http.get(LOGOUT_URL)

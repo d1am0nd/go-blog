@@ -10,7 +10,7 @@
       </div>
       <div class="six columns">
         <ul>
-          <li v-for="post in myPosts">
+          <li v-for="post in posts">
             <router-link :to="{ name: 'post', params: { slug: post.slug } }">{{ post.title }}</router-link>
           </li>
         </ul>
@@ -21,35 +21,20 @@
 
 <script>
 import auth from '@/auth/auth'
-import Errors from '@/errors'
-import posts from '@/services/db/posts'
 
 export default {
   name: 'Header',
-  data () {
-    return {
-      myPosts: []
-    }
-  },
   computed: {
     loggedIn () {
       return this.$store.getters.loggedIn
+    },
+    posts () {
+      return this.$store.getters.posts
     }
   },
   methods: {
     logout () {
       auth.logout()
-    }
-  },
-  created () {
-    if (this.loggedIn) {
-      posts.getMine()
-      .then((res) => {
-        this.myPosts = res.body
-      })
-      .catch((err) => {
-        Errors.newErrRes(err)
-      })
     }
   }
 }
