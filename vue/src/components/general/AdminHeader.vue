@@ -4,8 +4,8 @@
       <div class="six columns">
         <ul>
           <li><router-link :to="{ name: 'images' }">Images</router-link></li>
-          <li v-if="auth.check"><router-link :to="{ name: 'newPost' }">New post</router-link></li>
-          <li v-if="auth.check"><router-link :to="{ name: 'newImage' }">New Image</router-link></li>
+          <li v-if="loggedIn"><router-link :to="{ name: 'newPost' }">New post</router-link></li>
+          <li v-if="loggedIn"><router-link :to="{ name: 'newImage' }">New Image</router-link></li>
         </ul>
       </div>
       <div class="six columns">
@@ -28,8 +28,12 @@ export default {
   name: 'Header',
   data () {
     return {
-      auth: this.$root.auth,
       myPosts: []
+    }
+  },
+  computed: {
+    loggedIn () {
+      return this.$store.getters.loggedIn
     }
   },
   methods: {
@@ -38,7 +42,7 @@ export default {
     }
   },
   created () {
-    if (auth.checkAuth()) {
+    if (this.loggedIn) {
       posts.getMine()
       .then((res) => {
         this.myPosts = res.body

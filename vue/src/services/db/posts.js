@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import auth from '@/auth/auth'
+import store from '@/store'
 
 const POST_NEW_URL = '/api/posts/create'
 const POST_EDIT_URL = '/api/posts/edit/'
@@ -37,7 +38,7 @@ export default {
   },
 
   getMine () {
-    if (!auth.checkAuth()) {
+    if (!store.getters.loggedIn) {
       return
     }
     return Vue.http.get(GET_MINE_URL, {

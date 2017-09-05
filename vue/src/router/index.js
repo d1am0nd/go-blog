@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import auth from '@/auth/auth'
+import store from '@/store'
 import Router from 'vue-router'
 import Home from '@/components/pages/show/Home'
 import Post from '@/components/pages/show/Post'
@@ -81,9 +81,9 @@ var guestRoutes = [
 ]
 
 router.beforeEach((to, from, next) => {
-  if (guestRoutes.indexOf(to.name) !== -1 && to.name !== 'login' && auth.check === true) {
+  if (guestRoutes.indexOf(to.name) !== -1 && to.name !== 'login' && store.getters.loggedIn) {
     router.push({name: 'home'})
-  } else if (authRoutes.indexOf(to.name) !== -1 && auth.check === false) {
+  } else if (authRoutes.indexOf(to.name) !== -1 && store.getters.loggedIn === false) {
     router.push({name: 'login'})
   } else {
     next()

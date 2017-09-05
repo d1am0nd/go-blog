@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '@/store'
 import Errors from '@/errors'
 
 const LOGIN_URL = '/api/users/login'
@@ -10,14 +11,10 @@ const USER_SESS = 'user'
 const TOKEN_SESS = 'bearer'
 
 export default {
-  user: {},
   token: '',
-  check: false,
   init () {
     if (sessionStorage.getItem(USER_SESS) !== null && sessionStorage.getItem(TOKEN_SESS) !== null) {
-      this.token = sessionStorage.getItem(TOKEN_SESS)
-      this.user = JSON.parse(sessionStorage.getItem(USER_SESS))
-      this.check = true
+      store.commit('login', JSON.parse(sessionStorage.getItem(USER_SESS)), sessionStorage.getItem(TOKEN_SESS))
     }
   },
   login (ctx, creds, redirect) {
@@ -69,6 +66,7 @@ export default {
   },
 
   refresh (token = null) {
+    console.log('refresh')
     var headers = {}
     if (token !== null) {
       this.token = token
@@ -96,18 +94,15 @@ export default {
   setAuth (check, token = null, user = null) {
     if (check === true && this.check === false) {
       if (user !== null) {
-        this.user = user
         this.token = token
-        this.check = true
+        store.commit('login', user)
         sessionStorage.setItem(USER_SESS, JSON.stringify(user))
         sessionStorage.setItem(TOKEN_SESS, token)
       } else {
         this.refresh(token)
       }
     } else if (check === false) {
-      this.user = null
       this.token = null
-      this.check = false
       sessionStorage.removeItem(USER_SESS)
       sessionStorage.removeItem(TOKEN_SESS)
     }
@@ -129,6 +124,6 @@ export default {
   },
 
   checkAuth () {
-    return this.check === true
+    return store.getters.loggedIn
   }
 }

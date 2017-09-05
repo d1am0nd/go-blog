@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
         <MainHeader></MainHeader>
-        <AdminHeader v-if="auth.check"></AdminHeader>
+        <AdminHeader v-if="loggedIn"></AdminHeader>
         <router-view></router-view>
     </div>
   </div>
@@ -14,9 +14,9 @@ import AdminHeader from '@/components/general/AdminHeader'
 
 export default {
   name: 'app',
-  data () {
-    return {
-      auth: this.$root.auth
+  computed: {
+    loggedIn () {
+      return this.$store.getters.loggedIn
     }
   },
   components: {

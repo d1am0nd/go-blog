@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import store from '@/store'
 import VueResource from 'vue-resource'
 import App from '@/App'
 import router from '@/router'
@@ -9,8 +10,6 @@ import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './styles/main.scss'
 
-auth.init()
-
 Vue.config.productionTip = false
 Vue.use(VueResource)
 
@@ -18,17 +17,21 @@ Vue.use(VueResource)
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   data () {
     return {
       auth: auth
     }
   },
+  created () {
+    auth.init()
+  },
   components: { App }
 })
 
 Vue.http.interceptors.push((req, next) => {
-  if (auth.checkAuth()) {
+  if (store.getters.loggedIn) {
     req.headers.append('Authorization', auth.getToken())
   }
   next((res) => {

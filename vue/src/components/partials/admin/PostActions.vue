@@ -23,7 +23,8 @@ export default {
   },
   methods: {
     can () {
-      return this.auth.check && this.post.user_id === this.auth.user.id
+      return this.$store.getters.loggedIn &&
+        this.post.user_id === this.$store.getters.user.id
     }
   }
 }

@@ -5,8 +5,8 @@
       <div class="twelve columns">
         <ul>
           <li><router-link :to="{ name: 'home' }">Home</router-link></li>
-          <li v-if="auth.check"><span>{{ auth.user.name }}</span></li>
-          <li v-if="auth.check"><a href="javascript:;" @click="logout">Logout</a></li>
+          <li v-if="loggedIn"><span>{{ user.name }}</span></li>
+          <li v-if="loggedIn"><a href="javascript:;" @click="logout">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -21,19 +21,20 @@ export default {
   name: 'Header',
   data () {
     return {
-      auth: this.$root.auth,
       navTitle: config.nav_title
+    }
+  },
+  computed: {
+    loggedIn () {
+      return this.$store.getters.loggedIn
+    },
+    user () {
+      return this.$store.getters.user
     }
   },
   methods: {
     logout () {
       auth.logout()
-    },
-    refreshAuth () {
-      auth.refresh()
-    },
-    checkAuth () {
-      return auth.checkAuth()
     }
   }
 }
