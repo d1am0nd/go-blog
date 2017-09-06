@@ -29,5 +29,27 @@ export default new Vuex.Store({
     setPosts (state, posts) {
       state.posts = posts
     }
+  },
+  modules: {
+    post: {
+      state: {
+        post: {
+          id: '',
+          content: '',
+          summary: '',
+          published_at: { String: '', Valid: false }
+        }
+      },
+      getters: {
+        post (state) {
+          return state.post
+        }
+      },
+      mutations: {
+        setPost (state, post) {
+          state.post = post
+        }
+      }
+    }
   }
 })
