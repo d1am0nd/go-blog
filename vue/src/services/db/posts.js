@@ -34,7 +34,11 @@ export default {
   },
 
   getBySlug (slug) {
-    return Vue.http.get(GET_BY_SLUG_URL + slug)
+    return Vue.http.get(GET_BY_SLUG_URL + slug, {
+      headers: {
+        'Authorization': auth.getToken()
+      }
+    })
   },
 
   getMine () {
