@@ -12,7 +12,6 @@ const USER_SESS = 'user'
 const TOKEN_SESS = 'bearer'
 
 export default {
-  token: '',
   init () {
     if (sessionStorage.getItem(USER_SESS) !== null && sessionStorage.getItem(TOKEN_SESS) !== null) {
       store.commit('login', JSON.parse(sessionStorage.getItem(USER_SESS)), sessionStorage.getItem(TOKEN_SESS))
@@ -33,6 +32,8 @@ export default {
     .then((res) => {
       var header = res.headers.get('Authorization')
       this.setAuth(true, header, res.body)
+      console.log('we here')
+      console.log(header, res.body)
 
       posts.getMine()
       .then((res) => {
@@ -77,11 +78,9 @@ export default {
   },
 
   refresh (token = null) {
-    console.log('refresh')
     var headers = {}
     if (token !== null) {
-      this.token = token
-      headers.Authorization = token
+      headers.Authorization = this.getToken()
       sessionStorage.setItem(TOKEN_SESS, token)
     }
 
@@ -103,17 +102,13 @@ export default {
   },
 
   setAuth (check, token = null, user = null) {
-    if (check === true && this.check === false) {
+    if (check === true) {
       if (user !== null) {
-        this.token = token
         store.commit('login', user)
         sessionStorage.setItem(USER_SESS, JSON.stringify(user))
         sessionStorage.setItem(TOKEN_SESS, token)
-      } else {
-        this.refresh(token)
       }
     } else if (check === false) {
-      this.token = null
       sessionStorage.removeItem(USER_SESS)
       sessionStorage.removeItem(TOKEN_SESS)
     }
@@ -127,14 +122,15 @@ export default {
     }
   },
 
+  hasToken () {
+    return sessionStorage.getItem(TOKEN_SESS) !== null
+  },
+
   getToken () {
-    if (this.checkAuth()) {
-      return sessionStorage.getItem(TOKEN_SESS)
-    }
-    return null
+    return sessionStorage.getItem(TOKEN_SESS)
   },
 
   checkAuth () {
-    return store.getters.loggedIn
+    return store.hasToken()
   }
 }

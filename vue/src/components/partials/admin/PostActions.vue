@@ -15,10 +15,9 @@
 <script>
 export default {
   name: 'PostActions',
-  props: ['post'],
-  data () {
-    return {
-      auth: this.$root.auth
+  computed: {
+    post () {
+      return this.$store.getters.post
     }
   },
   methods: {

@@ -32,7 +32,7 @@ new Vue({
 
 Vue.http.interceptors.push((req, next) => {
   if (store.getters.loggedIn) {
-    req.headers.append('Authorization', auth.getToken())
+    req.headers.set('Authorization', auth.getToken())
   }
   next((res) => {
     if (res.headers.has('Authorization')) {

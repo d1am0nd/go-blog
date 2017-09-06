@@ -27,16 +27,9 @@ export default {
     PostRender: PostRender,
     PostActions: PostActions
   },
-  data () {
-    return {
-      post: {
-        title: '',
-        slug: '-',
-        summary: '',
-        content: '',
-        active: 0,
-        published_at: {}
-      }
+  computed: {
+    post () {
+      return this.$store.getters.post
     }
   },
   created () {
@@ -49,10 +42,9 @@ export default {
     fetchData () {
       posts.getBySlug(this.$route.params.slug)
       .then((res) => {
-        this.post = res.body
+        this.$store.commit('setPost', res.body)
         Meta.title(this.post.title)
         Meta.description(this.post.summary)
-        console.log(this.post)
       })
       .catch((err) => {
         Errors.newErrRes(err)
