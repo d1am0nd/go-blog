@@ -34,10 +34,15 @@ export default new Vuex.Store({
     post: {
       state: {
         post: {
-          id: '',
-          content: '',
+          title: '',
+          slug: '',
           summary: '',
-          published_at: { String: '', Valid: false }
+          content: '',
+          active: 0,
+          published_at: {
+            String: '',
+            Valid: 0
+          }
         }
       },
       getters: {
