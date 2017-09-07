@@ -29,7 +29,7 @@ export default {
       return this.$store.getters.loggedIn
     },
     posts () {
-      return this.$store.getters.posts
+      return this.$store.getters.adminPosts
     }
   },
   methods: {

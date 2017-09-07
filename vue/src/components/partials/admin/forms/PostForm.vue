@@ -129,7 +129,7 @@ export default {
       if (post.id) {
         posts.update(post)
         .then((res) => {
-          console.log(res)
+          alert('saved')
         })
         .catch((err) => {
           Errors.newErrRes(err)
@@ -137,7 +137,7 @@ export default {
       } else {
         posts.new(post)
         .then((res) => {
-          console.log(res)
+          alert('saved')
         })
         .catch((err) => {
           Errors.newErrRes(err)

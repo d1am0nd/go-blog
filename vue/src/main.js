@@ -31,8 +31,6 @@ new Vue({
 })
 
 Vue.http.interceptors.push((req, next) => {
-  console.log('auth.getToken()')
-  console.log(auth.getToken())
   if (auth.hasToken()) {
     req.headers.set('Authorization', auth.getToken())
   }
