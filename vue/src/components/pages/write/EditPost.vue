@@ -37,7 +37,13 @@ export default {
     this.fetchData()
   },
   watch: {
-    '$route': 'fetchData'
+    '$route': 'fetchData',
+    post: {
+      handler (post) {
+        this.$store.commit('setPost', post)
+      },
+      deep: true
+    }
   },
   methods: {
     fetchData () {

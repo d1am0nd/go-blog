@@ -6,6 +6,7 @@
       <div class="col-md-12">
         <input
           type="text"
+          @input="updateFilter"
           placeholder="Filter"
           v-model="filter">
         </input>
@@ -32,7 +33,6 @@ export default {
   name: 'images',
   data () {
     return {
-      images: [],
       filter: ''
     }
   },
@@ -41,21 +41,21 @@ export default {
   },
   computed: {
     filteredImages () {
-      var vm = this
-      return this.images.filter((item) => {
-        return item.name.indexOf(vm.filter) !== -1
-      })
+      return this.$store.getters.filteredImages
     }
   },
   methods: {
     fetchData () {
       images.getImages()
       .then((res) => {
-        this.images = res.body
+        this.$store.commit('setImages', res.body)
       })
       .catch((err) => {
         Errors.newErrRes(err)
       })
+    },
+    updateFilter (e) {
+      this.$store.commit('setImagesFilter', e.target.value)
     }
   }
 }

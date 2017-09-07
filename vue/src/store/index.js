@@ -7,7 +7,9 @@ export default new Vuex.Store({
   state: {
     user: {},
     posts: [],
-    adminPosts: []
+    adminPosts: [],
+    imagesFilter: '',
+    images: []
   },
   getters: {
     user (state) {
@@ -21,6 +23,14 @@ export default new Vuex.Store({
     },
     adminPosts (state) {
       return state.adminPosts
+    },
+    imagesFilter (state) {
+      return state.imagesFilter
+    },
+    filteredImages (state) {
+      return state.images.filter((item) => {
+        return item.name.indexOf(state.imagesFilter) !== -1
+      })
     }
   },
   mutations: {
@@ -35,6 +45,12 @@ export default new Vuex.Store({
     },
     setAdminPosts (state, posts) {
       state.adminPosts = posts
+    },
+    setImagesFilter (state, filter) {
+      state.imagesFilter = filter
+    },
+    setImages (state, images) {
+      state.images = images
     }
   },
   modules: {
