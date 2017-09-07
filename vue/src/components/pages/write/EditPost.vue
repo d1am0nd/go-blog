@@ -2,7 +2,7 @@
   <section class="Post">
     <div class="row">
       <div class="twelve columns">
-        <PostForm></PostForm>
+        <PostForm :post="post"></PostForm>
       </div>
     </div>
   </section>
@@ -18,6 +18,21 @@ export default {
   components: {
     PostForm: PostForm
   },
+  data () {
+    return {
+      post: {
+        title: '',
+        slug: '',
+        summary: '',
+        content: '',
+        active: 0,
+        published_at: {
+          String: '',
+          Valid: 0
+        }
+      }
+    }
+  },
   created () {
     this.fetchData()
   },
@@ -29,6 +44,7 @@ export default {
       posts.getBySlug(this.$route.params.slug)
       .then((res) => {
         this.$store.commit('setPost', res.body)
+        this.post = Object.assign({}, this.$store.getters.post)
       })
       .catch((err) => {
         Errors.newErrRes(err)
