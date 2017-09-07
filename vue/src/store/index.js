@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: {},
-    posts: []
+    posts: [],
+    adminPosts: []
   },
   getters: {
     user (state) {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
     },
     posts (state) {
       return state.posts
+    },
+    adminPosts (state) {
+      return state.adminPosts
     }
   },
   mutations: {
@@ -28,6 +32,9 @@ export default new Vuex.Store({
     },
     setPosts (state, posts) {
       state.posts = posts
+    },
+    setAdminPosts (state, posts) {
+      state.adminPosts = posts
     }
   },
   modules: {

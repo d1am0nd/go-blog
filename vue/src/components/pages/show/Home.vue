@@ -24,8 +24,12 @@ export default {
   },
   data () {
     return {
-      posts: [],
       title: config.home_title
+    }
+  },
+  computed: {
+    posts () {
+      return this.$store.getters.posts
     }
   },
   created () {
@@ -37,7 +41,7 @@ export default {
     fetchData () {
       posts.getPublished()
       .then((res) => {
-        this.posts = res.body
+        this.$store.commit('setPosts', res.body)
       })
       .catch((err) => {
         Errors.newErrRes(err)

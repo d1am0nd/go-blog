@@ -17,7 +17,7 @@ export default {
       store.commit('login', JSON.parse(sessionStorage.getItem(USER_SESS)), sessionStorage.getItem(TOKEN_SESS))
       posts.getMine()
       .then((res) => {
-        store.commit('setPosts', res.body)
+        store.commit('setAdminPosts', res.body)
       })
     }
   },
@@ -32,12 +32,10 @@ export default {
     .then((res) => {
       var header = res.headers.get('Authorization')
       this.setAuth(true, header, res.body)
-      console.log('we here')
-      console.log(header, res.body)
 
       posts.getMine()
       .then((res) => {
-        store.commit('setPosts', res.body)
+        store.commit('setAdminPosts', res.body)
       })
     })
     .catch((err) => {
